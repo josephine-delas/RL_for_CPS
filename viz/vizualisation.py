@@ -1,8 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.colors as clr
 
 def print_anomalies(df, path_save, anomaly_time_start, anomaly_time_end):
+    '''
+    Visualize all attacks in one time series, given the start and end time
+    of the anomalies.
+    '''
     fig, ax = plt.subplots(len(anomaly_time_end), figsize=(15,10))
     length = np.timedelta64(4, 'h')
 
@@ -16,6 +21,33 @@ def print_anomalies(df, path_save, anomaly_time_start, anomaly_time_end):
         ax[i].axvspan(anomaly_time_start[i], anomaly_time_end[i], color='#FEDCC2')
 
     plt.savefig(path_save + 'LIT101_anomalies.svg', format='svg', dpi=1000)
+
+def print_results(reward_chain, loss_chain, path_save_fig, name, max_reward = 0):
+    '''
+    Visualize the training data of an agent (loss and reward)
+    name : str, 'test.pdf' for example
+    '''
+    plt.figure(1)
+    plt.subplot(211)
+    plt.plot(np.arange(len(reward_chain)),reward_chain,label='Reward')
+    plt.plot(np.arange(len(reward_chain)),np.full(len(reward_chain), max_reward),label='Max. Reward')
+    plt.title('Total reward by episode')
+    plt.xlabel('n Episode')
+    plt.ylabel('Total reward')
+    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+        ncol=2, mode="expand", borderaxespad=0.)
+
+    plt.subplot(212)
+    plt.plot(np.arange(len(loss_chain)),loss_chain,label='Defense')
+    plt.title('Loss by episode')
+    plt.xlabel('n Episode')
+    plt.ylabel('loss')
+    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+        ncol=2, mode="expand", borderaxespad=0.)
+    plt.tight_layout()
+    plt.savefig(path_save_fig + name, format='pdf', dpi=1000)
+
+
 
 path_save = "/home/jdelas/projects/def-fcuppens/jdelas/figures/"
 path = "/home/jdelas/projects/def-fcuppens/jdelas/datasets/"
